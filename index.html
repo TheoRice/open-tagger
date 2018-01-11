@@ -1,0 +1,46 @@
+<head>
+
+</head>
+<body>
+    <h1>Video Info</h1>
+    <form>
+        <div>
+            <label>Select a video</label>
+            <input type='file' accept='video/*' id='vidFile' />
+        </div>
+        <div>
+            <label>Title</label>
+            <input type='text' id='title' />
+        </div>
+        <div>
+            <label>Description</label>
+            <input type='text' id='description'/>
+        </div>
+        <div>
+            <label>Cover</label>
+            <input type='file' accept='image/*' id='imgFile' />
+        </div>
+        <button type='submit'>Get Info</button>
+    </form>
+
+    <h1 id='duration'></h1>
+    
+
+    <script>
+        const electron = require('electron');
+        const { ipcRenderer } = electron; 
+
+        document.querySelector('form').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const vidPath = document.querySelector('#vidFile').files[0].path;
+            const imgPath = document.querySelector('#imgFile').files[0].path;
+            // console.log(document.querySelector('#imgFile').files[0]);
+            // console.log(document.getElementById('title').value);
+            ipcRenderer.send('video:submit', vidPath, document.getElementById('title').value, imgPath, document.getElementById('description').value);
+        });
+
+        ipcRenderer.on('video:metadata', (err, metadata) => {
+            document.getElementById('duration').innerHTML = metadata;
+        })
+    </script>
+</body>
