@@ -17,6 +17,14 @@
             <input type='text' id='description'/>
         </div>
         <div>
+            <label>Long Description</label>
+            <input type='text' id='longDesc' />
+        </div>
+        <div>
+            <label>Release Date (YEAR-MONTH-DAY)</label>
+            <input type='text' id='year' />
+        </div>
+        <div>
             <label>Cover</label>
             <input type='file' accept='image/*' id='imgFile' />
         </div>
@@ -34,9 +42,15 @@
             event.preventDefault();
             const vidPath = document.querySelector('#vidFile').files[0].path;
             const imgPath = document.querySelector('#imgFile').files[0].path;
-            console.log(document.querySelector('#imgFile').files[0]);
-            // console.log(document.getElementById('title').value);
-            ipcRenderer.send('video:submit', vidPath, document.getElementById('title').value, imgPath, document.getElementById('description').value);
+            ipcRenderer.send(
+                'video:submit', 
+                vidPath, 
+                document.getElementById('title').value, 
+                imgPath, 
+                document.getElementById('description').value,
+                document.getElementById('longDesc').value,
+                document.getElementById('year').value
+            );
         });
 
         ipcRenderer.on('video:metadata', (err, metadata) => {

@@ -1,16 +1,18 @@
 {
-  "name": "videoinfo",
-  "version": "1.0.0",
+  "name": "mde",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "electron ."
   },
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheoRice/open-tagger"
+  },
+  "author": "Theo Rice",
+  "license": "MIT",
   "dependencies": {
-    "electron": "^1.7.11",
-    "fluent-ffmpeg": "^2.1.2",
-    "fs": "0.0.1-security"
+    "electron": "^1.7.11"
   }
 }
