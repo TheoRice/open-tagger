@@ -1,5 +1,6 @@
 const electron = require('electron');
-const {spawn} = require('child_process');
+const {spawn, exec} = require('child_process');
+// const exec = require('child_process').exec;
 
 const { app, BrowserWindow, ipcMain } = electron;
 
@@ -29,7 +30,7 @@ app.on('ready', () => {
 // AtomicParsley filePath --rDNSatom "content" name=iTunEXTC domain=com.apple.iTunes
 
 
-ipcMain.on('video:submit', (event, path, title, image, desc, longDesc, year) => {
+ipcMain.on('video:submit', (event, path, title, image, desc, longDesc, year, xmlMOVI, overwrite) => {
     var cmd = [path];
 
     if (title) {
@@ -52,10 +53,16 @@ ipcMain.on('video:submit', (event, path, title, image, desc, longDesc, year) => 
         cmd = cmd.concat([`--year`, year]);
     }
 
+    if (xmlMOVI) {
+        cmd = cmd.concat([`--rDNSatom`, `XMLFILE`, `name=iTunMOVI`, `domain=com.apple.iTunes`]);
+    }
+
     // Overwrite previous file
-    cmd = cmd.concat([`--overWrite`]);
-    console.log(cmd);
-    run(cmd);
+    if (overwrite) {
+        cmd = cmd.concat([`--overWrite`]);
+    }
+
+    run(cmd, xmlMOVI);
 })
 
 // Display progress information and errors to terminal
@@ -74,7 +81,17 @@ function receiveSTD(ap) {
 }
 
 // Run AtomicParsley command
-function run(arguments) {
-    var ap = spawn('AtomicParsley', arguments);
-    receiveSTD(ap);
+function run(arguments, xmlMOVI) {
+    if (xmlMOVI) {
+        exec(`cat "/tmp/xmlMOVI.txt"`, (error, stdout, stderr) => {
+            if (error) console.log(error);
+            if (stderr) console.log(stderr);
+            arguments[arguments.length-3] = stdout;
+            var ap = spawn('AtomicParsley', arguments);
+            receiveSTD(ap);
+        });
+    } else {
+        var ap = spawn('AtomicParsley', arguments);
+        receiveSTD(ap);
+    }
 };
