@@ -1,0 +1,26 @@
+body {
+    background-color: #56647a !important;
+}
+
+col {
+    justify-content: center;
+}
+
+input {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+#container {
+    width: 100%;
+    margin: 0px 0px 0px 0px !important;
+    overflow: hidden;
+}
+
+#bottom {
+    float: right;
+    padding: 0px 20px 20px 0px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}

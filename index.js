@@ -1,13 +1,15 @@
 const electron = require('electron');
 const {spawn, exec} = require('child_process');
-// const exec = require('child_process').exec;
 
 const { app, BrowserWindow, ipcMain } = electron;
 
 let mainWindow;
 
 app.on('ready', () => {
-    mainWindow = new BrowserWindow({});
+    mainWindow = new BrowserWindow({
+        width: 1500,
+        height: 750
+    });
     mainWindow.loadURL(`file://${__dirname}/index.html`);
 });
 
@@ -26,11 +28,7 @@ app.on('ready', () => {
     covr            Artwork             cover art
 */
 
-// for ratings and cast info
-// AtomicParsley filePath --rDNSatom "content" name=iTunEXTC domain=com.apple.iTunes
-
-
-ipcMain.on('video:submit', (event, path, title, image, desc, longDesc, year, xmlMOVI, overwrite) => {
+ipcMain.on('video:submit', (event, path, title, image, desc, year, xmlMOVI, directors, overwrite) => {
     var cmd = [path];
 
     if (title) {
@@ -42,11 +40,7 @@ ipcMain.on('video:submit', (event, path, title, image, desc, longDesc, year, xml
     }
 
     if (desc) {
-        cmd = cmd.concat([`--description`, desc]);
-    }
-
-    if (longDesc) {
-        cmd = cmd.concat([`--longdesc`, longDesc]);
+        cmd = cmd.concat([`--description`, desc.slice(100), `--longdesc`, desc]);
     }
 
     if (year) {
@@ -55,6 +49,10 @@ ipcMain.on('video:submit', (event, path, title, image, desc, longDesc, year, xml
 
     if (xmlMOVI) {
         cmd = cmd.concat([`--rDNSatom`, `XMLFILE`, `name=iTunMOVI`, `domain=com.apple.iTunes`]);
+    }
+
+    if (directors) {
+        cmd = cmd.concat(`--artist`, directors)
     }
 
     // Overwrite previous file

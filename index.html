@@ -1,136 +1,79 @@
-<head>
+<!DOCTYPE HTML>
+
+<head>    
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="js/jquery-3.3.1.min.js"></script>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="style.css">    
+    <script src="./mde.js"></script>
 
 </head>
 <body>
     <h1>MDE</h1>
     <form>
-        <div>
-            <label>Select a video</label>
-            <input type='file' accept='video/*' id='vidFile' />
+    <div class="container-fluid">
+        <div class="col-md-23">
+            <div class="row justify-content-center">
+                <div class="col-md-2">
+                    <div>
+                        <img src="" id="poster-img" style="width:225px;" />
+                    </div>
+                    <div class='form-group'>
+                        <input type='file' accept='video/mp4' id='vidFile' />
+                    </div>
+                </div>
+                <div class='col-md-9'>
+                    <div class='row justify-content-center'>
+                        <div class="col-md-6">
+                            <div>
+                                <input type='text' class='form-control' id='title' placeholder="Title" />
+                            </div>
+                            <div>
+                                <label>Poster</label>
+                                <input type='file' accept='image/*' id='imgFile' />
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-control" id="directors" rows="1" placeholder="Directors"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-control" id="producers" rows="3" placeholder="Producers"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <textarea class="form-control" id="screenwriters" rows="3" placeholder="Screenwriters"></textarea>
+                            </div>
+                            <div>
+                                <input type='text' class='form-control' id='studio' placeholder="Studio" />
+                            </div>
+                            <div>
+                                <label>Release Date</label>
+                                <div class="col-4">
+                                    <input type="date" class="form-control" id="year">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <textarea class="form-control" id="description" rows="10" placeholder="Description"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <textarea class="form-control" id="cast" rows="10" placeholder="Cast"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    Overwrite? <input type="checkbox" , id='overwrite'>
+                </div>
+                <div id="bottom">
+                    <button type='submit' class="btn btn-success">Write to File</button>
+                </div>
+            </div>
         </div>
-        <div>
-            <label>Title</label>
-            <input type='text' id='title' />
-        </div>
-        <div>
-            <label>Description</label>
-            <input type='text' id='description'/>
-        </div>
-        <div>
-            <label>Long Description</label>
-            <input type='text' id='longDesc' />
-        </div>
-        <div>
-            <label>Cast</label>
-            <input type='text' id='cast' />
-        </div>
-        <div>
-            <label>Directors</label>
-            <input type='text' id='directors' />
-        </div>
-        <div>
-            <label>Producers</label>
-            <input type='text' id='producers' />
-        </div>
-        <div>
-            <label>Screenwriters</label>
-            <input type='text' id='screenwriters' />
-        </div>
-        <div>
-            <label>Studio</label>
-            <input type='text' id='studio' />
-        </div>
-        <div>
-            <label>Release Date (YEAR-MONTH-DAY)</label>
-            <input type='text' id='year' />
-        </div>
-        <div>
-            <label>Cover</label>
-            <input type='file' accept='image/*' id='imgFile' />
-        </div>
-
-        Overwrite?  <input type="checkbox", id='overwrite'>
-        <button type='submit'>Write to File</button>
     </form>
-
-    <h1 id='duration'></h1>
-    
-
-    <script>
-        const electron = require('electron');
-        const { ipcRenderer } = electron; 
-        window.fs = require('fs');
-
-        document.querySelector('form').addEventListener('submit', (event) => {
-            event.preventDefault();
-            const xmlMOVI = writeXML();
-            const vidPath = document.querySelector('#vidFile').files[0].path;
-            const imgPath = document.querySelector('#imgFile').files[0].path;
-            fs.writeFile('/tmp/xmlMOVI.txt', xmlMOVI, function (err) {
-                if (err) throw err;
-                console.log('Saved!');
-            });
-            ipcRenderer.send(
-                'video:submit', 
-                vidPath, 
-                document.getElementById('title').value, 
-                imgPath, 
-                document.getElementById('description').value,
-                document.getElementById('longDesc').value,
-                document.getElementById('year').value,
-                true,
-                document.getElementById('overwrite').checked
-            );
-        });
-
-        ipcRenderer.on('video:metadata', (err, metadata) => {
-            document.getElementById('duration').innerHTML = metadata;
-        })
-
-        function writeMultipleNamesToXML(arr, type) {
-            namesXML = `\n\t<key>${type}</key>\n\t<array>`;
-
-            for (var i = 0; i < arr.length; i++) {
-                namesXML = namesXML + `\n\t\t<dict>
-            \t\t<key>name</key>
-            \t\t<string>${arr[i]}</string>
-        \t</dict>`;
-            }
-
-            namesXML = namesXML + `
-    \t</array>`;
-            return namesXML;
-        }
-
-        function writeXML() {
-            var xmlfile = `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>`;
-
-            // retrieve and parse cast information
-            var cast = document.getElementById('cast').value.split(', ');
-            xmlfile = xmlfile + writeMultipleNamesToXML(cast,'cast');
-
-            // retrieve and parse directors information
-            var directors = document.getElementById('directors').value.split(', ');
-            xmlfile = xmlfile + writeMultipleNamesToXML(directors,'directors');
-
-            // retrieve and parse producers information
-            var producers = document.getElementById('producers').value.split(', ');
-            xmlfile = xmlfile + writeMultipleNamesToXML(producers,'producers');
-
-            // retrieve and parse screen writers information
-            var screenwriters = document.getElementById('screenwriters').value.split(', ');
-            xmlfile = xmlfile + writeMultipleNamesToXML(screenwriters,'screenwriters');
-
-            // retrieve studio information
-            const studio = document.getElementById('studio').value;
-            xmlfile = xmlfile + `\n\t<key>studio</key>\n\t<string>${studio}</string>`;
-            xmlfile = xmlfile + `
-</dict>
-</plist>`;
-            return xmlfile;
-        }
-    </script>
 </body>
