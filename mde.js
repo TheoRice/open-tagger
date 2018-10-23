@@ -9,7 +9,6 @@ $(document).ready(function() {
         event.preventDefault();
         const xmlMOVI = writeXML();
 
-        console.log($('#year'));
 
         fs.writeFile('/tmp/xmlMOVI.txt', xmlMOVI, function (err) {
             if (err) throw err;
@@ -25,6 +24,10 @@ $(document).ready(function() {
             $('#directors')[0].value.replace("\n", "&"),
             $('#overwrite').checked
         );
+    });
+
+    $('#add-queue').click( function() {
+        console.log('queue button press detected');
     });
 
     $('#imgFile').change(function() {
