@@ -5,10 +5,10 @@ $(document).ready(function() {
     } = electron;
     window.fs = require('fs');
 
-    document.querySelector('form').addEventListener('submit', (event) => {
-        event.preventDefault();
-        const xmlMOVI = writeXML();
+    var queue = [];
 
+    $('#start-queue').click(function() {
+        const xmlMOVI = writeXML();
 
         fs.writeFile('/tmp/xmlMOVI.txt', xmlMOVI, function (err) {
             if (err) throw err;
@@ -26,8 +26,19 @@ $(document).ready(function() {
         );
     });
 
-    $('#add-queue').click( function() {
-        console.log('queue button press detected');
+    $('#add-queue').click(function() {
+        var item = [writeXML()];
+        item.push($('#vidFile')[0].files[0].path);
+        item.push($('#title')[0].value, );
+        item.push($('#imgFile')[0].files[0].path);
+        item.push($('#description')[0].value);
+        item.push($('#year')[0].value);
+        item.push(true);
+        item.push($('#directors')[0].value.replace("\n", "&"));
+        item.push($('#overwrite').checked);
+
+        console.log(item);
+        queue.push(item);
     });
 
     $('#imgFile').change(function() {
