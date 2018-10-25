@@ -11,6 +11,10 @@ input {
     margin-bottom: 5px;
 }
 
+h1 {
+    padding-left: 15px;
+}
+
 #container {
     width: 100%;
     margin: 0px 0px 0px 0px !important;
