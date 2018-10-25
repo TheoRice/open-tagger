@@ -7,7 +7,9 @@ $(document).ready(function() {
 
     var queue = [];
 
+
     $('#start-queue').click(function() {
+
         const xmlMOVI = writeXML();
 
         fs.writeFile('/tmp/xmlMOVI.txt', xmlMOVI, function (err) {
@@ -22,7 +24,7 @@ $(document).ready(function() {
             $('#year')[0].value,
             true,
             $('#directors')[0].value.replace("\n", "&"),
-            $('#overwrite').checked
+            $('#overwrite')[0].checked
         );
     });
 
@@ -35,9 +37,8 @@ $(document).ready(function() {
         item.push($('#year')[0].value);
         item.push(true);
         item.push($('#directors')[0].value.replace("\n", "&"));
-        item.push($('#overwrite').checked);
+        item.push($('#overwrite')[0].checked);
 
-        console.log(item);
         queue.push(item);
     });
 
